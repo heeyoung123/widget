@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   motion,
   useInView,
@@ -32,6 +33,97 @@ const marqueeItems = [
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const topRowLogos = [
+  { src: "/jtbc.svg", alt: "JTBC", h: 40 },
+  { src: "/channelA.svg", alt: "채널A", h: 32 },
+  { src: "/mbc.svg", alt: "MBC", h: 24 },
+  { src: "/tripass.png", alt: "Tripass", h: 40 },
+  { src: "/edaily.png", alt: "EDAILY", h: 36 },
+  { src: "/sbs.png", alt: "SBS", h: 40 },
+  { src: "/plus.png", alt: "플플", h: 36 },
+  { src: "/mbn.svg", alt: "MBN", h: 24 },
+  { src: "/hyu.png", alt: "한양대", h: 32 },
+  { src: "/inuiro.png", alt: "인의로", h: 28 },
+  { src: "/gifez.png", alt: "기페즈", h: 36 },
+  { src: "/cidermics.png", alt: "사이더경제", h: 28 },
+  { src: "/livewith.png", alt: "라이브위드", h: 28 },
+];
+
+const bottomRowLogos = [
+  { src: "/kbs.png", alt: "KBS", h: 40 },
+  { src: "/shampagnefirm.png", alt: "샴페인펌", h: 28 },
+  { src: "/cj.png", alt: "CJ", h: 32 },
+  { src: "/image.png", alt: "미디어커머스", h: 28 },
+  { src: "/tv-chosun.png", alt: "TV조선", h: 40 },
+  { src: "/butiple.jpg", alt: "부티플", h: 28 },
+  { src: "/v.png", alt: "V", h: 32 },
+  { src: "/channels4_profile.jpg", alt: "채널스4", h: 28 },
+  { src: "/gwangju.jpeg", alt: "광주", h: 32 },
+  { src: "/media-commerce.png", alt: "미디어커머스", h: 28 },
+  { src: "/modori.png", alt: "모도리", h: 28 },
+  { src: "/vivid-venture.jpg", alt: "비비드벤처", h: 28 },
+];
+
+type LogoItem = { src: string; alt: string; h: number };
+
+function LogoMarqueeRow({
+  logos,
+  direction,
+  speed,
+}: {
+  logos: LogoItem[];
+  direction: "left" | "right";
+  speed: number;
+}) {
+  const track = [...logos, ...logos];
+  const animName = direction === "left" ? "logo-marquee-left" : "logo-marquee-right";
+  return (
+    <div className="overflow-hidden bg-white py-4">
+      <style>{`
+        @keyframes logo-marquee-left {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        @keyframes logo-marquee-right {
+          from { transform: translateX(-50%); }
+          to   { transform: translateX(0); }
+        }
+      `}</style>
+      <div
+        className="flex items-center gap-0 w-max"
+        style={{ animation: `${animName} ${speed}s linear infinite` }}
+      >
+        {track.map((logo, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-center px-10"
+            style={{ opacity: 0.75 }}
+          >
+            <Image
+              src={logo.src}
+              alt={logo.alt}
+              width={logo.h * 3}
+              height={logo.h}
+              style={{ height: logo.h, width: "auto", objectFit: "contain" }}
+              unoptimized
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LogoMarqueeSection() {
+  return (
+    <div className="mt-12 space-y-6">
+      <LogoMarqueeRow logos={topRowLogos} direction="left" speed={40} />
+      <Marquee />
+      <LogoMarqueeRow logos={bottomRowLogos} direction="right" speed={32} />
+    </div>
+  );
+}
 
 /* ─────────────────────────── sub-components ─────────────────────────── */
 
@@ -71,7 +163,7 @@ function Marquee() {
   const track = [...marqueeItems, ...marqueeItems];
   return (
     <div
-      className="overflow-hidden border-t border-b py-4 mt-16"
+      className="overflow-hidden border-t border-b py-4"
       style={{ borderColor: "rgba(255,255,255,0.06)" }}
     >
       <style>{`
@@ -161,7 +253,7 @@ export default function AboutSection() {
       ref={sectionRef}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="relative overflow-hidden bg-[#070911] py-28 md:py-40 px-6"
+      className="relative overflow-hidden bg-black py-28 md:py-40 px-6"
     >
       {/* subtle grid — same density as WhyChooseUs */}
       <div
@@ -202,7 +294,8 @@ export default function AboutSection() {
 
         {/* label — matches WhyChooseUs label style */}
         <motion.div
-          className="mb-10 flex items-center gap-3"
+          id="about-pmt"
+          className="scroll-mt-24 mb-10 flex items-center gap-3"
           initial={{ opacity: 0, x: -12 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.15, ease }}
@@ -394,8 +487,8 @@ export default function AboutSection() {
           transition={{ duration: 0.9, delay: 0.35, ease }}
         />
 
-        {/* marquee strip */}
-        <Marquee />
+        {/* logo marquee (텍스트 마퀴 포함) */}
+        <LogoMarqueeSection />
       </div>
     </section>
   );

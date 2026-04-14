@@ -68,7 +68,7 @@ export default function HeroGlobe() {
     >
       <color attach="background" args={["#000000"]} />
       <ambientLight intensity={0.07} />
-      <hemisphereLight args={["#203050", "#080810", 0.35]} />
+      <hemisphereLight args={["#203050", "#000000", 0.35]} />
       <directionalLight position={[14, 6, 12]} intensity={1.08} color="#ffffff" />
       <directionalLight position={[-10, -4, -8]} intensity={0.22} color="#4a6ab0" />
       <Suspense fallback={null}>

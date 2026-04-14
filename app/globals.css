@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080810;
+  --background: #000000;
   --foreground: #f0f0ff;
 }
 
@@ -10,6 +10,10 @@ body {
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 @keyframes float {
@@ -71,6 +75,31 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Gradient-border card matching gradient-text-metal palette */
+.eco-card {
+  position: relative;
+  border-radius: 1.4rem;
+  background: linear-gradient(180deg, rgba(8,11,20,0.80) 0%, rgba(6,9,16,0.88) 100%);
+  box-shadow:
+    0 20px 56px rgba(0,0,0,0.45),
+    0 1px 0 rgba(255,255,255,0.04) inset;
+}
+
+.eco-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(240,244,252,0.35) 0%, rgba(168,176,192,0.15) 45%, rgba(94,102,116,0.08) 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .node-flow-grid {

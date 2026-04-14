@@ -9,7 +9,7 @@ const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"));
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#080810]" style={{ overflowX: "clip" }}>
+    <main className="min-h-screen bg-black" style={{ overflowX: "clip" }}>
       <Navbar />
       <HeroSection />
       <DeferredMount anchorId="services" placeholderClassName="min-h-[3600px] w-full scroll-mt-24">

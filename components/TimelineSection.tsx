@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 
 const services = [
   {
@@ -51,6 +51,19 @@ export default function TimelineSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const sceneRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const revealProgress = useSpring(
+    useTransform(scrollYProgress, [0.05, 0.22], [0, 1]),
+    { stiffness: 170, damping: 30, mass: 0.7 }
+  );
+  const leftOpacity = useTransform(revealProgress, [0, 1], [0.12, 1]);
+  const leftY = useTransform(revealProgress, [0, 1], [28, 0]);
+  const badgeY = useTransform(scrollYProgress, [0, 1], [-8, 12]);
+  const titleY = useTransform(scrollYProgress, [0, 1], [-4, 18]);
+  const descY = useTransform(scrollYProgress, [0, 1], [0, 24]);
 
   useEffect(() => {
     const nodes = sceneRefs.current.filter(
@@ -77,26 +90,47 @@ export default function TimelineSection() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative bg-[#070911]"
+      className="relative bg-black"
     >
       {/* ── Sticky viewport ── */}
       <div className="sticky top-0 z-20 h-[100svh] overflow-hidden flex items-center">
-        <div className="relative w-full h-full mx-auto max-w-[1280px] px-6 md:px-14 flex items-center">
-          <div className="grid w-full gap-10 md:gap-20 grid-cols-1 md:grid-cols-[5fr_7fr]">
+        <div className="relative w-full h-full mx-auto max-w-[1440px] px-6 md:px-16 flex items-center">
+          <div className="grid w-full gap-10 md:gap-24 grid-cols-1 md:grid-cols-[4fr_8fr]">
 
             {/* ── LEFT: title + progress ── */}
-            <div className="flex flex-col justify-center">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/40 mb-5">
+            <motion.div className="flex flex-col justify-center" style={{ opacity: leftOpacity, y: leftY }}>
+              <motion.p
+                style={{ y: badgeY }}
+                initial={{ opacity: 0, y: 22, filter: "blur(6px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{ duration: 0.45, ease }}
+                className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/40 mb-5"
+              >
                 Our Services
-              </p>
-              <h2 className="text-[clamp(2rem,4.2vw,3.4rem)] font-bold tracking-tight text-white leading-[1.06]">
+              </motion.p>
+              <motion.h2
+                style={{ y: titleY }}
+                initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{ duration: 0.5, ease, delay: 0.06 }}
+                className="text-[clamp(2rem,4.2vw,3.4rem)] font-bold tracking-tight text-white leading-[1.06]"
+              >
                 창작부터 유통까지,
                 <br />
                 <span className="gradient-text-metal">하나의 생태계로</span>
-              </h2>
-              <p className="mt-5 text-[0.92rem] leading-relaxed text-zinc-400/90 max-w-[22rem] hidden md:block">
+              </motion.h2>
+              <motion.p
+                style={{ y: descY }}
+                initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{ duration: 0.42, ease, delay: 0.12 }}
+                className="mt-5 text-[0.92rem] leading-relaxed text-zinc-400/90 max-w-[22rem] hidden md:block"
+              >
                 PMT의 세 가지 핵심 서비스가 유기적으로 연결되어 새로운 미디어 경험을 만듭니다.
-              </p>
+              </motion.p>
 
               {/* Progress + step labels */}
               <div className="mt-9 hidden md:flex items-start gap-5">
@@ -110,11 +144,11 @@ export default function TimelineSection() {
                 </div>
 
                 {/* Step labels */}
-                <div className="flex flex-col w-full">
+                <div className="relative flex flex-col w-full">
                   {services.map((item, i) => (
                     <motion.div
                       key={item.id}
-                      className="flex items-center gap-3 py-[0.7rem] border-b last:border-0"
+                      className="flex items-center gap-3 h-[44px] border-b last:border-0"
                       style={{ borderColor: "rgba(255,255,255,0.07)" }}
                       animate={{ opacity: i === active ? 1 : 0.28 }}
                       transition={{ duration: 0.35 }}
@@ -136,7 +170,7 @@ export default function TimelineSection() {
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* ── RIGHT: accordion cards ── */}
             <div className="flex flex-col justify-center">
@@ -149,8 +183,8 @@ export default function TimelineSection() {
                     style={{ borderColor: "rgba(255,255,255,0.09)" }}
                   >
                     {/* Header row */}
-                    <div className="flex items-center justify-between py-[1.05rem] gap-4 select-none">
-                      <div className="flex items-center gap-4 min-w-0">
+                    <div className="flex items-center justify-between py-[1.35rem] gap-6 select-none">
+                      <div className="flex items-center gap-6 min-w-0">
                         <motion.span
                           style={{ fontFamily: "monospace", fontSize: "11px", letterSpacing: "0.12em", flexShrink: 0 }}
                           animate={{
@@ -163,7 +197,7 @@ export default function TimelineSection() {
                           {item.code}
                         </motion.span>
                         <motion.h3
-                          className="text-[clamp(1.05rem,2.1vw,1.55rem)] font-semibold leading-tight tracking-tight truncate"
+                          className="text-[clamp(1.35rem,2.7vw,2.1rem)] font-semibold leading-tight tracking-tight truncate"
                           animate={{
                             color: isActive
                               ? "rgba(255,255,255,1)"
@@ -215,8 +249,8 @@ export default function TimelineSection() {
                           }}
                           className="overflow-hidden"
                         >
-                          <div className="pb-7 pr-2 md:pr-8">
-                            <p className="text-[0.93rem] leading-relaxed text-zinc-300/80 mb-5 max-w-[36rem]">
+                          <div className="pb-9 pr-2 md:pr-12">
+                            <p className="text-[1.08rem] leading-relaxed text-zinc-300/82 mb-7 max-w-[48rem]">
                               {item.description}
                             </p>
                             <p
@@ -248,7 +282,7 @@ export default function TimelineSection() {
                                     className="flex-shrink-0 rounded-full bg-white/45"
                                     style={{ width: 4, height: 4 }}
                                   />
-                                  <span className="text-[0.88rem] text-zinc-200/75 leading-relaxed">
+                                  <span className="text-[1rem] text-zinc-200/78 leading-relaxed">
                                     {inc}
                                   </span>
                                 </motion.div>
