@@ -1,61 +1,61 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+const HeroGlobe = dynamic(() => import("@/components/HeroGlobe"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-black" aria-hidden />,
+});
+
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 overflow-hidden">
-      {/* Background radial glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-600/8 blur-[100px] pointer-events-none animate-pulse-slow" />
-      <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-emerald-600/6 blur-[100px] pointer-events-none animate-pulse-slow" />
-
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      <div className="relative z-10 max-w-5xl mx-auto text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/20 bg-violet-500/5 text-violet-300 text-xs font-medium mb-8 tracking-wide">
-          <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-          Polestar Media Tech
+    <section className="relative min-h-[100dvh] overflow-x-hidden bg-black">
+      <div className="absolute bottom-0 left-0 right-0 z-0 h-[min(50vh,520px)] w-full min-h-[360px] md:h-[min(54vh,580px)] md:min-h-[400px]">
+        <div className="absolute inset-x-[-12%] bottom-0 top-0 overflow-hidden md:inset-x-[-14%]">
+          <HeroGlobe />
         </div>
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-28 bg-gradient-to-b from-black via-black/75 to-transparent md:h-36"
+          aria-hidden
+        />
+      </div>
 
-        {/* Main headline */}
-        <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tight mb-6">
-          <span className="text-white">누구나 즐겁게</span>
-          <br />
-          <span className="gradient-text">창조하고 연결되는</span>
-          <br />
-          <span className="text-white">미디어 세상</span>
-        </h1>
+      <div className="relative z-20 flex min-h-[100dvh] flex-col px-6 pb-10">
+        <header className="shrink-0 pt-[max(0.5rem,calc(env(safe-area-inset-top,0px)+4.5rem))] text-center md:pt-[max(0.75rem,calc(env(safe-area-inset-top,0px)+5rem))]">
+          <div className="hero-fade-in inline-flex items-center gap-3 border border-white/10 bg-white/[0.03] px-4 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.32em] text-white/55 md:text-[11px]">
+            <span className="h-1 w-1 rounded-full bg-white/40" />
+            Polestar Media Tech
+          </div>
+        </header>
 
-        {/* Subtitle */}
-        <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-4">
-          PMT는 기술을 통해
-        </p>
-        <p className="text-base md:text-lg text-white/40 max-w-3xl mx-auto leading-relaxed mb-12">
-          창작 · 유통 · 캠페인이 자연스럽게 이어지는
-          <br className="hidden md:block" />
-          새로운 미디어 생태계를 만들어갑니다
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button className="px-7 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-violet-500/20">
-            서비스 알아보기
-          </button>
-          <button className="px-7 py-3.5 rounded-xl border border-white/10 text-white/60 font-medium text-sm hover:border-white/20 hover:text-white/80 transition-all">
-            문의하기 →
-          </button>
+        <div className="flex min-h-0 flex-1 -translate-y-10 flex-col items-center justify-center pb-[max(4.5rem,min(18vh,160px))] pt-6 md:-translate-y-16 md:pb-[max(5rem,min(22vh,200px))] md:pt-10">
+          <h1 className="hero-fade-in-delay-1 text-center text-[clamp(1.85rem,5.8vw,3.75rem)] font-bold leading-[1.06] tracking-tight text-white [text-shadow:0_2px_40px_rgba(0,0,0,0.9)]">
+            누구나 즐겁게
+            <br />
+            <span className="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+              창조하고 연결되는
+            </span>
+            <br />
+            <span className="mt-1 block text-[0.42em] font-extralight tracking-wide text-zinc-400 md:text-[0.45em]">
+              미디어 세상
+            </span>
+          </h1>
+          <div className="hero-fade-in-delay-2 mx-auto mt-6 max-w-lg px-2 text-center md:mt-8 md:max-w-xl">
+            <p className="mb-2 text-sm text-zinc-400 [text-shadow:0_2px_24px_rgba(0,0,0,0.85)] md:text-base">
+              PMT는 기술을 통해
+            </p>
+            <p className="text-xs leading-relaxed text-zinc-500 [text-shadow:0_2px_20px_rgba(0,0,0,0.8)] md:text-sm">
+              창작 · 유통 · 캠페인이 자연스럽게 이어지는
+              <br className="hidden sm:block" />
+              새로운 미디어 생태계를 만들어갑니다
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20">
-        <span className="text-xs tracking-widest uppercase">scroll</span>
-        <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
+      <div className="pointer-events-none absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-zinc-600 animate-bounce-slow">
+        <span className="text-[10px] tracking-[0.35em] uppercase">scroll</span>
+        <div className="h-10 w-px bg-gradient-to-b from-zinc-600 to-transparent" />
       </div>
     </section>
   );
