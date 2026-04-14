@@ -1,138 +1,284 @@
-const steps = [
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const services = [
   {
-    step: "STEP 1",
-    number: "01",
+    id: "creation",
+    code: "00-1",
     title: "AI 숏폼 자동 생성",
     description:
       "영상을 분석하여 가장 전달력 높은 콘텍스트 기반 CQAA 알고리즘으로 최적의 숏폼 클립을 자동 생성합니다.",
-    features: [
+    includes: [
       "긴 영상 → 숏폼 클립 자동 생성",
       "전달력·조회수 최적화 알고리즘",
       "SNS 업로드·유통까지 워크플로우 단축",
       "Clipink 서비스 기반의 기술 확장성 확보",
     ],
-    color: "from-violet-500 to-purple-600",
-    glow: "rgba(139, 92, 246, 0.15)",
-    accent: "text-violet-400",
-    border: "border-violet-500/20",
-    tag: "bg-violet-500/10 text-violet-300",
   },
   {
-    step: "STEP 2",
-    number: "02",
+    id: "distribution",
+    code: "00-2",
     title: "캠페인 & 미디어 홍보",
     description:
       "캠페인 운영·홍보·전환 관리까지 가능한 미디어 마케팅 플랫폼을 제공합니다.",
-    features: [
+    includes: [
       "캠페인 생성 / 운영 / 퍼포먼스 분석",
       "광고·홍보 효율 극대화",
       "브랜드-크리에이터-미디어 채널 연결",
-      "콘텐츠 유통을 중심으로 한 미디어 생태계 구축",
+      "콘텐츠 유통 중심의 생태계 구축",
     ],
-    color: "from-blue-500 to-cyan-600",
-    glow: "rgba(59, 130, 246, 0.12)",
-    accent: "text-blue-400",
-    border: "border-blue-500/20",
-    tag: "bg-blue-500/10 text-blue-300",
   },
   {
-    step: "STEP 3",
-    number: "03",
+    id: "ecosystem",
+    code: "00-3",
     title: "미디어 소스 공유",
     description:
       "다양한 소스(영상, 이미지, 음원 등)를 기업·크리에이터·파트너가 안심하고 공유할 수 있도록 지원합니다.",
-    features: [
+    includes: [
       "소스 데이터 저장/관리/공유",
       "캠페인을 통한 콘텐츠 확산",
       "필요 시 판매/라이선스 연동",
-      "미디어 산업 전체를 연결하는 개방형 허브 역할",
+      "미디어 산업 개방형 허브 역할",
     ],
-    color: "from-emerald-500 to-teal-600",
-    glow: "rgba(16, 185, 129, 0.12)",
-    accent: "text-emerald-400",
-    border: "border-emerald-500/20",
-    tag: "bg-emerald-500/10 text-emerald-300",
   },
 ];
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export default function TimelineSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const sceneRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const nodes = sceneRefs.current.filter(
+      (n): n is HTMLDivElement => n !== null
+    );
+    if (!nodes.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = Number(entry.target.getAttribute("data-step"));
+          if (Number.isInteger(idx)) setActive(idx);
+        });
+      },
+      { threshold: 0.55 }
+    );
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+
+  const progressPercent = ((active + 1) / services.length) * 100;
+
   return (
-    <section id="services" className="relative py-32 px-6">
-      {/* Section header */}
-      <div className="max-w-5xl mx-auto mb-24 text-center">
-        <p className="text-xs font-semibold tracking-[0.2em] uppercase text-violet-400 mb-4">
-          Our Services
-        </p>
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight">
-          창작부터 유통까지,
-          <br />
-          <span className="gradient-text">하나의 생태계로</span>
-        </h2>
-        <p className="text-white/40 text-lg max-w-xl mx-auto">
-          PMT의 세 가지 핵심 서비스가 유기적으로 연결되어 새로운 미디어 경험을 만듭니다.
-        </p>
-      </div>
+    <section
+      id="services"
+      ref={sectionRef}
+      className="relative bg-[#070911]"
+    >
+      {/* ── Sticky viewport ── */}
+      <div className="sticky top-0 z-20 h-[100svh] overflow-hidden flex items-center">
+        <div className="relative w-full h-full mx-auto max-w-[1280px] px-6 md:px-14 flex items-center">
+          <div className="grid w-full gap-10 md:gap-20 grid-cols-1 md:grid-cols-[5fr_7fr]">
 
-      {/* Timeline */}
-      <div className="max-w-4xl mx-auto relative">
-        {/* Vertical line */}
-        <div className="absolute left-[27px] md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px timeline-line" />
+            {/* ── LEFT: title + progress ── */}
+            <div className="flex flex-col justify-center">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/40 mb-5">
+                Our Services
+              </p>
+              <h2 className="text-[clamp(2rem,4.2vw,3.4rem)] font-bold tracking-tight text-white leading-[1.06]">
+                창작부터 유통까지,
+                <br />
+                <span className="gradient-text-metal">하나의 생태계로</span>
+              </h2>
+              <p className="mt-5 text-[0.92rem] leading-relaxed text-zinc-400/90 max-w-[22rem] hidden md:block">
+                PMT의 세 가지 핵심 서비스가 유기적으로 연결되어 새로운 미디어 경험을 만듭니다.
+              </p>
 
-        <div className="space-y-20">
-          {steps.map((item, index) => (
-            <div
-              key={item.step}
-              className={`relative flex flex-col md:flex-row gap-8 md:gap-16 ${
-                index % 2 === 1 ? "md:flex-row-reverse" : ""
-              }`}
-            >
-              {/* Timeline dot */}
-              <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-6 flex items-center justify-center">
-                <div
-                  className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}
-                  style={{ boxShadow: `0 0 30px ${item.glow}` }}
-                >
-                  <span className="text-white font-bold text-lg">{item.number}</span>
+              {/* Progress + step labels */}
+              <div className="mt-9 hidden md:flex items-start gap-5">
+                {/* Vertical line */}
+                <div className="relative w-[1px] self-stretch bg-white/10 flex-shrink-0">
+                  <motion.div
+                    className="absolute top-0 left-0 w-full bg-white"
+                    animate={{ height: `${progressPercent}%` }}
+                    transition={{ duration: 0.55, ease }}
+                  />
+                </div>
+
+                {/* Step labels */}
+                <div className="flex flex-col w-full">
+                  {services.map((item, i) => (
+                    <motion.div
+                      key={item.id}
+                      className="flex items-center gap-3 py-[0.7rem] border-b last:border-0"
+                      style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                      animate={{ opacity: i === active ? 1 : 0.28 }}
+                      transition={{ duration: 0.35 }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          fontFamily: "monospace",
+                          letterSpacing: "0.12em",
+                          color: "rgba(255,255,255,0.55)",
+                        }}
+                      >
+                        {item.code}
+                      </span>
+                      <span className="text-[0.82rem] text-white/80 font-medium">
+                        {item.title}
+                      </span>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-
-              {/* Content card */}
-              <div
-                className={`ml-20 md:ml-0 md:w-[calc(50%-3rem)] card-hover rounded-2xl border ${item.border} bg-white/[0.02] p-7`}
-                style={{ boxShadow: `0 0 0 1px rgba(255,255,255,0.03) inset` }}
-              >
-                {/* Step badge */}
-                <span className={`inline-block text-xs font-semibold tracking-widest px-3 py-1 rounded-full ${item.tag} mb-4`}>
-                  {item.step}
-                </span>
-
-                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
-                  {item.title}
-                </h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-6">
-                  {item.description}
-                </p>
-
-                {/* Feature list */}
-                <ul className="space-y-2.5">
-                  {item.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm text-white/40">
-                      <span className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center`}>
-                        <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Spacer for alternating layout */}
-              <div className="hidden md:block md:w-[calc(50%-3rem)]" />
             </div>
-          ))}
+
+            {/* ── RIGHT: accordion cards ── */}
+            <div className="flex flex-col justify-center">
+              {services.map((item, i) => {
+                const isActive = active === i;
+                return (
+                  <div
+                    key={item.id}
+                    className="border-t last:border-b"
+                    style={{ borderColor: "rgba(255,255,255,0.09)" }}
+                  >
+                    {/* Header row */}
+                    <div className="flex items-center justify-between py-[1.05rem] gap-4 select-none">
+                      <div className="flex items-center gap-4 min-w-0">
+                        <motion.span
+                          style={{ fontFamily: "monospace", fontSize: "11px", letterSpacing: "0.12em", flexShrink: 0 }}
+                          animate={{
+                            color: isActive
+                              ? "rgba(255,255,255,0.6)"
+                              : "rgba(255,255,255,0.22)",
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {item.code}
+                        </motion.span>
+                        <motion.h3
+                          className="text-[clamp(1.05rem,2.1vw,1.55rem)] font-semibold leading-tight tracking-tight truncate"
+                          animate={{
+                            color: isActive
+                              ? "rgba(255,255,255,1)"
+                              : "rgba(255,255,255,0.3)",
+                          }}
+                          transition={{ duration: 0.35 }}
+                        >
+                          {item.title}
+                        </motion.h3>
+                      </div>
+
+                      {/* Animated plus → cross */}
+                      <motion.div
+                        className="flex-shrink-0 flex items-center justify-center"
+                        animate={{ rotate: isActive ? 45 : 0 }}
+                        transition={{ duration: 0.3, ease }}
+                      >
+                        <motion.svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 15 15"
+                          fill="none"
+                          animate={{
+                            opacity: isActive ? 0.7 : 0.25,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <path
+                            d="M7.5 1v13M1 7.5h13"
+                            stroke="white"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                          />
+                        </motion.svg>
+                      </motion.div>
+                    </div>
+
+                    {/* Expandable body */}
+                    <AnimatePresence initial={false}>
+                      {isActive && (
+                        <motion.div
+                          key={`body-${item.id}`}
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{
+                            height: { duration: 0.48, ease },
+                            opacity: { duration: 0.28, delay: 0.08 },
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pb-7 pr-2 md:pr-8">
+                            <p className="text-[0.93rem] leading-relaxed text-zinc-300/80 mb-5 max-w-[36rem]">
+                              {item.description}
+                            </p>
+                            <p
+                              style={{
+                                fontSize: "10px",
+                                fontWeight: 600,
+                                letterSpacing: "0.2em",
+                                textTransform: "uppercase",
+                                color: "rgba(255,255,255,0.35)",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              Includes
+                            </p>
+                            <div className="flex flex-col gap-2">
+                              {item.includes.map((inc, j) => (
+                                <motion.div
+                                  key={inc}
+                                  initial={{ opacity: 0, x: -6 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{
+                                    duration: 0.3,
+                                    delay: 0.14 + j * 0.065,
+                                    ease,
+                                  }}
+                                  className="flex items-center gap-3"
+                                >
+                                  <span
+                                    className="flex-shrink-0 rounded-full bg-white/45"
+                                    style={{ width: 4, height: 4 }}
+                                  />
+                                  <span className="text-[0.88rem] text-zinc-200/75 leading-relaxed">
+                                    {inc}
+                                  </span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* ── Scroll spacers (one per service card) ── */}
+      <div className="relative z-10">
+        {services.map((item, index) => (
+          <div
+            key={`scene-${item.id}`}
+            ref={(el) => {
+              sceneRefs.current[index] = el;
+            }}
+            data-step={index}
+            className="h-[100svh]"
+            aria-hidden="true"
+          />
+        ))}
       </div>
     </section>
   );

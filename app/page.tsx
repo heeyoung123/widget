@@ -12,7 +12,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#080810]" style={{ overflowX: "clip" }}>
       <Navbar />
       <HeroSection />
-      <DeferredMount anchorId="services" placeholderClassName="min-h-[2000px] w-full scroll-mt-24">
+      <DeferredMount anchorId="services" placeholderClassName="min-h-[3600px] w-full scroll-mt-24">
         <TimelineSection />
       </DeferredMount>
       <DeferredMount anchorId="about" placeholderClassName="min-h-[640px] w-full scroll-mt-24">
