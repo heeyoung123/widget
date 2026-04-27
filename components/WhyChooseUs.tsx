@@ -160,15 +160,6 @@ export default function WhyChooseUs() {
           </div>
         ))}
 
-        <div className="h-px bg-white/12" />
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-12">
-          <p className="text-white/30 text-sm tracking-wide">PMT와 함께 미디어 비즈니스를 혁신하세요</p>
-          <button className="group flex items-center gap-3 text-sm font-semibold tracking-widest uppercase text-white border border-white/20 px-7 py-3.5 hover:bg-white hover:text-black transition-all duration-300">
-            지금 시작하기
-            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </button>
-        </div>
       </div>
     </section>
   );

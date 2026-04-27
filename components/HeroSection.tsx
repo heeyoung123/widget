@@ -21,26 +21,15 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-20 flex min-h-[100dvh] flex-col px-6 pb-10">
-        <header className="shrink-0 pt-[max(0.5rem,calc(env(safe-area-inset-top,0px)+4.5rem))] text-center md:pt-[max(0.75rem,calc(env(safe-area-inset-top,0px)+5rem))]">
-          <div className="hero-fade-in inline-flex items-center gap-3 border border-white/10 bg-white/[0.03] px-4 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.32em] text-white/55 md:text-[11px]">
-            <span className="h-1 w-1 rounded-full bg-white/40" />
-            Polestar Media Tech
-          </div>
-        </header>
-
-        <div className="flex min-h-0 flex-1 -translate-y-10 flex-col items-center justify-center pb-[max(4.5rem,min(18vh,160px))] pt-6 md:-translate-y-16 md:pb-[max(5rem,min(22vh,200px))] md:pt-10">
-          <h1 className="hero-fade-in-delay-1 text-center text-[clamp(2.25rem,7vw,4.75rem)] font-bold leading-[1.06] tracking-tight text-white [text-shadow:0_2px_40px_rgba(0,0,0,0.9)]">
-            누구나 즐겁게
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-start pb-[max(4rem,min(16vh,140px))] pt-[18vh] md:pb-[max(4.5rem,min(18vh,170px))] md:pt-[20vh]">
+          <h1 className="hero-fade-in-delay-1 text-center text-[clamp(2.5rem,6.8vw,4.8rem)] font-black leading-[1.1] tracking-tight text-white [text-shadow:0_2px_40px_rgba(0,0,0,0.9)]">
+            글로벌 미디어 생태계 구축을 위한
             <br />
-            <span className="text-white">
-              창조하고 연결되는
-            </span>
-            <br />
-            <span className="mt-1 block text-[0.42em] font-extralight tracking-wide text-white md:text-[0.45em]">
-              미디어 세상
+            <span className="block text-[0.78em] font-semibold tracking-wide text-white md:text-[0.82em]">
+              &apos;시각 지능 AI 모델&apos;
             </span>
           </h1>
-          <div className="hero-fade-in-delay-2 mx-auto mt-6 max-w-lg px-2 text-center md:mt-8 md:max-w-xl">
+          <div className="hero-fade-in-delay-2 mx-auto mt-8 max-w-lg px-2 text-center md:mt-10 md:max-w-xl">
             <p className="mb-2 text-base text-zinc-400 [text-shadow:0_2px_24px_rgba(0,0,0,0.85)] md:text-lg">
               PMT는 기술을 통해
             </p>
@@ -49,6 +38,17 @@ export default function HeroSection() {
               <br className="hidden sm:block" />
               새로운 미디어 생태계를 만들어갑니다
             </p>
+            <a
+              href="https://clipink.ai/"
+              target="_blank"
+              rel="noreferrer"
+              className="group mt-8 inline-flex items-center gap-4 border border-white/20 px-9 py-4 text-base font-semibold tracking-widest uppercase text-white transition-all duration-300 hover:bg-white hover:text-black"
+            >
+              지금 시작하기
+              <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </a>
           </div>
         </div>
       </div>

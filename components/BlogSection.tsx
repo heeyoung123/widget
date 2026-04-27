@@ -19,6 +19,9 @@ type CardProps = {
 
 function BlogCard({ index, featured = false }: CardProps) {
   const post = blogPosts[index];
+  if (!post) {
+    return null;
+  }
   const pointerX = useMotionValue(50);
   const pointerY = useMotionValue(50);
   const glowX = useSpring(pointerX, { stiffness: 70, damping: 24, mass: 0.85 });
@@ -43,9 +46,8 @@ function BlogCard({ index, featured = false }: CardProps) {
         pointerX.set(x);
         pointerY.set(y);
       }}
-      className={`group relative overflow-hidden bg-[#050505] ${
-        featured ? "min-h-[22rem] md:min-h-[25rem]" : "min-h-[17rem] md:min-h-[18rem]"
-      }`}
+      className={`group relative overflow-hidden bg-[#050505] ${featured ? "min-h-[22rem] md:min-h-[25rem]" : "min-h-[17rem] md:min-h-[18rem]"
+        }`}
     >
       <Link
         href={`/blog/${post.slug}`}
@@ -64,9 +66,8 @@ function BlogCard({ index, featured = false }: CardProps) {
           initial={false}
           whileHover={{ scale: 1.03 }}
           transition={{ duration: 1.1, ease }}
-          className={`relative m-[10px] mb-0 overflow-hidden ${post.imageStyle} ${
-            featured ? "h-[15rem] md:h-[16rem]" : "h-[9.5rem] md:h-[10rem]"
-          }`}
+          className={`relative m-[10px] mb-0 overflow-hidden ${post.imageStyle} ${featured ? "h-[15rem] md:h-[16rem]" : "h-[12rem] md:h-[13rem]"
+            }`}
         >
           <motion.div
             className="absolute inset-0"
@@ -76,20 +77,14 @@ function BlogCard({ index, featured = false }: CardProps) {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent_20%,rgba(0,0,0,0.12))]" />
             <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_20%,rgba(255,255,255,0.18)_40%,transparent_58%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
           </motion.div>
-          {featured ? (
-            <div className="absolute left-2 top-2 border border-white/20 bg-black/70 px-1.5 py-1 text-[7px] font-semibold uppercase tracking-[0.16em] text-white">
-              Featured Post
-            </div>
-          ) : null}
         </motion.div>
 
         <div className="flex flex-1 flex-col justify-between px-[10px] pb-[10px] pt-2">
           <motion.h3
-            className={`max-w-[32rem] font-semibold uppercase leading-[1.1] tracking-[-0.03em] text-white ${
-              featured
-                ? "text-[clamp(0.92rem,1.5vw,1.15rem)]"
-                : "text-[clamp(0.76rem,1vw,0.92rem)]"
-            }`}
+            className={`max-w-[32rem] font-semibold uppercase leading-[1.1] tracking-[-0.03em] text-white ${featured
+              ? "text-[clamp(0.92rem,1.5vw,1.15rem)]"
+              : "text-[clamp(0.76rem,1vw,0.92rem)]"
+              }`}
             whileHover={{ x: 2 }}
             transition={{ duration: 0.7, ease }}
           >
@@ -114,16 +109,19 @@ export default function BlogSection({ mode = "home" }: BlogSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
   const isPage = mode === "page";
+  const hasFeatured = blogPosts.length > 0;
+  const hasSecondary = blogPosts.length > 1;
+  const remainingIndexes = blogPosts.slice(2, 5).map((_, idx) => idx + 2);
+  const hasSingleRemaining = remainingIndexes.length === 1;
 
   return (
     <section
       id={isPage ? undefined : "blog"}
       ref={sectionRef}
-      className={`relative overflow-hidden bg-black px-0 ${
-        isPage ? "pt-28 pb-20 md:pt-32" : "pt-20 pb-16"
-      }`}
+      className={`relative overflow-hidden bg-black px-0 ${isPage ? "pt-28 pb-20 md:pt-32" : "pt-20 pb-16"
+        }`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_30%)]" />
+
       <div className="relative mx-auto max-w-[1440px] border-x border-white/14 bg-[#020202]">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -139,7 +137,7 @@ export default function BlogSection({ mode = "home" }: BlogSectionProps) {
               transition={{ duration: 1.25, ease, delay: 0.12 }}
               className="text-[clamp(3.4rem,8vw,6.3rem)] font-black uppercase leading-[0.88] tracking-[-0.08em] text-white"
             >
-              Our
+              폴미
             </motion.h2>
             <motion.h2
               initial={{ opacity: 0, x: 20 }}
@@ -147,7 +145,7 @@ export default function BlogSection({ mode = "home" }: BlogSectionProps) {
               transition={{ duration: 1.25, ease, delay: 0.26 }}
               className="self-end text-[clamp(3.4rem,8vw,6.3rem)] font-black uppercase leading-[0.88] tracking-[-0.08em] text-white"
             >
-              Blog
+              소식
             </motion.h2>
           </div>
           <motion.div
@@ -165,26 +163,37 @@ export default function BlogSection({ mode = "home" }: BlogSectionProps) {
           </motion.div>
         </motion.div>
 
-        <div className="grid border-b border-white/14 md:grid-cols-[2fr_1fr]">
-          <div className="border-b border-white/14 md:border-b-0 md:border-r md:border-white/14">
-            <BlogCard index={0} featured />
+        {hasFeatured ? (
+          <div className="grid border-b border-white/14 md:grid-cols-[2fr_1fr]">
+            <div className="border-b border-white/14 md:border-b-0 md:border-r md:border-white/14">
+              <BlogCard index={0} featured />
+            </div>
+            {hasSecondary ? (
+              <div>
+                <BlogCard index={1} />
+              </div>
+            ) : null}
           </div>
-          <div>
-            <BlogCard index={1} />
-          </div>
-        </div>
+        ) : null}
 
-        <div className="grid md:grid-cols-3">
-          <div className="border-b border-white/14 md:border-b-0 md:border-r md:border-white/14">
-            <BlogCard index={2} />
+        {remainingIndexes.length > 0 ? (
+          <div className={`grid ${hasSingleRemaining ? "md:grid-cols-1" : "md:grid-cols-3"}`}>
+            {remainingIndexes.map((cardIndex, idx) => (
+              <div
+                key={blogPosts[cardIndex]?.slug ?? cardIndex}
+                className={
+                  !hasSingleRemaining && idx < remainingIndexes.length - 1
+                    ? "border-b border-white/14 md:border-b-0 md:border-r md:border-white/14"
+                    : hasSingleRemaining
+                      ? "w-full"
+                      : ""
+                }
+              >
+                <BlogCard index={cardIndex} />
+              </div>
+            ))}
           </div>
-          <div className="border-b border-white/14 md:border-b-0 md:border-r md:border-white/14">
-            <BlogCard index={3} />
-          </div>
-          <div>
-            <BlogCard index={4} />
-          </div>
-        </div>
+        ) : null}
       </div>
     </section>
   );
