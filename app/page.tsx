@@ -6,6 +6,7 @@ import DeferredMount from "@/components/DeferredMount";
 const TimelineSection = dynamic(() => import("@/components/TimelineSection"));
 const AboutSection = dynamic(() => import("@/components/AboutSection"));
 const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"));
+const BlogSection = dynamic(() => import("@/components/BlogSection"));
 
 export default function Home() {
   return (
@@ -20,6 +21,9 @@ export default function Home() {
       </DeferredMount>
       <DeferredMount anchorId="why" placeholderClassName="min-h-[1500px] w-full scroll-mt-24">
         <WhyChooseUs />
+      </DeferredMount>
+      <DeferredMount anchorId="blog" placeholderClassName="min-h-[1180px] w-full scroll-mt-24">
+        <BlogSection />
       </DeferredMount>
       <footer className="border-t border-zinc-800 py-10 text-center text-sm text-zinc-600">
         <p>© 2026 Polestar Media Tech. All rights reserved.</p>

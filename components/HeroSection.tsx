@@ -29,22 +29,22 @@ export default function HeroSection() {
         </header>
 
         <div className="flex min-h-0 flex-1 -translate-y-10 flex-col items-center justify-center pb-[max(4.5rem,min(18vh,160px))] pt-6 md:-translate-y-16 md:pb-[max(5rem,min(22vh,200px))] md:pt-10">
-          <h1 className="hero-fade-in-delay-1 text-center text-[clamp(1.85rem,5.8vw,3.75rem)] font-bold leading-[1.06] tracking-tight text-white [text-shadow:0_2px_40px_rgba(0,0,0,0.9)]">
+          <h1 className="hero-fade-in-delay-1 text-center text-[clamp(2.25rem,7vw,4.75rem)] font-bold leading-[1.06] tracking-tight text-white [text-shadow:0_2px_40px_rgba(0,0,0,0.9)]">
             누구나 즐겁게
             <br />
-            <span className="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+            <span className="text-white">
               창조하고 연결되는
             </span>
             <br />
-            <span className="mt-1 block text-[0.42em] font-extralight tracking-wide text-zinc-400 md:text-[0.45em]">
+            <span className="mt-1 block text-[0.42em] font-extralight tracking-wide text-white md:text-[0.45em]">
               미디어 세상
             </span>
           </h1>
           <div className="hero-fade-in-delay-2 mx-auto mt-6 max-w-lg px-2 text-center md:mt-8 md:max-w-xl">
-            <p className="mb-2 text-sm text-zinc-400 [text-shadow:0_2px_24px_rgba(0,0,0,0.85)] md:text-base">
+            <p className="mb-2 text-base text-zinc-400 [text-shadow:0_2px_24px_rgba(0,0,0,0.85)] md:text-lg">
               PMT는 기술을 통해
             </p>
-            <p className="text-xs leading-relaxed text-zinc-500 [text-shadow:0_2px_20px_rgba(0,0,0,0.8)] md:text-sm">
+            <p className="text-sm leading-relaxed text-zinc-500 [text-shadow:0_2px_20px_rgba(0,0,0,0.8)] md:text-base">
               창작 · 유통 · 캠페인이 자연스럽게 이어지는
               <br className="hidden sm:block" />
               새로운 미디어 생태계를 만들어갑니다

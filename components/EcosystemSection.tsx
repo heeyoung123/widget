@@ -46,6 +46,9 @@ const services = [
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const springSlow = { stiffness: 70, damping: 26, mass: 1.15 };
+const springStep = { stiffness: 180, damping: 34, mass: 1.05 };
+const springIcon = { stiffness: 240, damping: 32, mass: 0.95 };
 
 export default function EcosystemSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -59,8 +62,8 @@ export default function EcosystemSection() {
     offset: ["start end", "end start"],
   });
   const revealProgress = useSpring(
-    useTransform(scrollYProgress, [0.02, 0.23], [0, 1]),
-    { stiffness: 140, damping: 24, mass: 0.78 }
+    useTransform(scrollYProgress, [0.02, 0.32], [0, 1]),
+    springSlow
   );
   const badgeY = useTransform(scrollYProgress, [0, 1], [-14, 14]);
   const titleY = useTransform(scrollYProgress, [0, 1], [-8, 22]);
@@ -91,7 +94,7 @@ export default function EcosystemSection() {
           setActive(idx);
         });
       },
-      { threshold: 0.55 }
+      { threshold: 0.66 }
     );
 
     nodes.forEach((node) => observer.observe(node));
@@ -99,9 +102,9 @@ export default function EcosystemSection() {
   }, []);
 
   return (
-    <section id="ecosystem" ref={sectionRef} className="relative bg-black">
+    <section id="ecosystem" ref={sectionRef} className="relative min-h-[100svh] bg-black">
       <motion.div
-        className="sticky top-0 z-20 h-[100svh] overflow-hidden flex items-center"
+        className="sticky top-0 z-20 h-[100svh] min-h-[100svh] overflow-hidden flex items-center"
         style={{
           opacity: sectionOpacity,
           y: sectionY,
@@ -124,13 +127,14 @@ export default function EcosystemSection() {
                 className="text-[clamp(2rem,4.2vw,3.4rem)] font-bold tracking-tight text-white leading-[1.06] break-keep"
               >
                 <span className="block">창작부터 유통까지,</span>
-                <span className="gradient-text-metal block">하나의 생태계로</span>
+                <span className="block text-white">하나의 생태계로</span>
               </motion.h2>
               <motion.p
                 style={{ y: descY }}
                 className="mt-5 text-[0.92rem] leading-relaxed text-zinc-400/90 max-w-[30rem] hidden md:block break-keep mx-auto"
               >
-                PMT의 세 가지 핵심 서비스가 유기적으로 연결되어 새로운 미디어 경험을 만듭니다.
+                <span className="block">PMT의 세 가지 핵심 서비스가 유기적으로 연결되어</span>
+                <span className="block">새로운 미디어 경험을 만듭니다.</span>
               </motion.p>
 
             </motion.div>
@@ -163,9 +167,7 @@ export default function EcosystemSection() {
                       }}
                       transition={{
                         type: "spring",
-                        stiffness: 360,
-                        damping: 30,
-                        mass: 0.85,
+                        ...springStep,
                       }}
                     >
                       <div className="flex items-center gap-6 min-w-0">
@@ -181,7 +183,7 @@ export default function EcosystemSection() {
                               ? "rgba(255,255,255,0.6)"
                               : "rgba(255,255,255,0.22)",
                           }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.62, ease }}
                         >
                           {item.code}
                         </motion.span>
@@ -192,7 +194,7 @@ export default function EcosystemSection() {
                               ? "rgba(255,255,255,1)"
                               : "rgba(255,255,255,0.3)",
                           }}
-                          transition={{ duration: 0.35 }}
+                          transition={{ duration: 0.68, ease }}
                         >
                           {item.title}
                         </motion.h3>
@@ -206,9 +208,7 @@ export default function EcosystemSection() {
                         }}
                         transition={{
                           type: "spring",
-                          stiffness: 520,
-                          damping: 28,
-                          mass: 0.7,
+                          ...springIcon,
                         }}
                       >
                         <motion.svg
@@ -217,7 +217,7 @@ export default function EcosystemSection() {
                           viewBox="0 0 22 22"
                           fill="none"
                           animate={{ opacity: isActive ? 0.7 : 0.25 }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.62, ease }}
                         >
                           <path
                             d="M11 1.8v18.4M1.8 11h18.4"
@@ -255,11 +255,11 @@ export default function EcosystemSection() {
                             scale: 0.99,
                           }}
                           transition={{
-                            height: { duration: 0.42, ease },
-                            opacity: { duration: 0.24, delay: 0.02 },
-                            y: { duration: 0.36, ease },
-                            filter: { duration: 0.28 },
-                            scale: { duration: 0.36, ease },
+                            height: { duration: 0.86, ease },
+                            opacity: { duration: 0.5, delay: 0.06 },
+                            y: { duration: 0.76, ease },
+                            filter: { duration: 0.58 },
+                            scale: { duration: 0.72, ease },
                           }}
                           className="overflow-hidden origin-top"
                         >
@@ -268,7 +268,7 @@ export default function EcosystemSection() {
                               className="text-[1.2rem] leading-[1.75] text-zinc-200/85 mb-8 max-w-[58rem]"
                               initial={{ opacity: 0, y: 14, filter: "blur(3px)" }}
                               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                              transition={{ duration: 0.32, ease, delay: 0.08 }}
+                              transition={{ duration: 0.62, ease, delay: 0.16 }}
                             >
                               {item.description}
                             </motion.p>
@@ -283,7 +283,7 @@ export default function EcosystemSection() {
                               }}
                               initial={{ opacity: 0, y: 10, letterSpacing: "0.26em" }}
                               animate={{ opacity: 1, y: 0, letterSpacing: "0.22em" }}
-                              transition={{ duration: 0.28, ease, delay: 0.12 }}
+                              transition={{ duration: 0.56, ease, delay: 0.22 }}
                             >
                               Includes
                             </motion.p>
@@ -306,9 +306,9 @@ export default function EcosystemSection() {
                                     filter: "blur(0px)",
                                   }}
                                   transition={{
-                                    duration: 0.26,
+                                    duration: 0.52,
                                     ease,
-                                    delay: 0.16 + j * 0.05,
+                                    delay: 0.28 + j * 0.09,
                                   }}
                                   className="flex items-center gap-3"
                                 >
@@ -342,7 +342,7 @@ export default function EcosystemSection() {
               sceneRefs.current[index] = el;
             }}
             data-step={index}
-            className="h-[100svh]"
+            className="h-[135svh]"
             aria-hidden="true"
           />
         ))}

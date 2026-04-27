@@ -30,7 +30,7 @@ const reasons = [
   },
 ];
 
-const METAL_TEXT_END_S = 0.7 + 0.9 + 0.08;
+const METAL_TEXT_END_S = 0.9 + 1.25 + 0.18;
 
 export default function WhyChooseUs() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -79,7 +79,7 @@ export default function WhyChooseUs() {
         if (!card) return;
         const divider = card.querySelector(".divider-line") as HTMLElement;
         const inner = card.querySelector(".card-inner") as HTMLElement;
-        const stagger = i * 0.2;
+        const stagger = i * 0.34;
 
         if (inner) {
           gsap.set(inner, { visibility: "visible" });
@@ -89,8 +89,8 @@ export default function WhyChooseUs() {
             {
               opacity: 1,
               y: 0,
-              duration: 0.88,
-              ease: "power3.out",
+              duration: 1.35,
+              ease: "power4.out",
               delay: stagger,
             }
           );
@@ -98,8 +98,8 @@ export default function WhyChooseUs() {
         if (divider) {
           gsap.to(divider, {
             scaleX: 1,
-            duration: 0.8,
-            ease: "power3.out",
+            duration: 1.2,
+            ease: "power4.out",
             delay: stagger,
           });
         }

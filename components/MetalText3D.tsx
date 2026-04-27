@@ -6,7 +6,7 @@ import { Text3D, Center, Environment } from "@react-three/drei";
 import * as THREE from "three";
 
 const LINES = ["WHY", "CHOOSE", "US"];
-const DELAYS = [0.0, 0.35, 0.7];
+const DELAYS = [0.0, 0.5, 1.0];
 
 function MetalWords({ triggered }: { triggered: boolean }) {
   const groupRef = useRef<THREE.Group>(null!);
@@ -41,7 +41,7 @@ function MetalWords({ triggered }: { triggered: boolean }) {
       const elapsed = clock.current - DELAYS[i];
       if (elapsed <= 0) return;
 
-      const duration = 0.9;
+      const duration = 1.25;
       const p = Math.min(elapsed / duration, 1);
       const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
 

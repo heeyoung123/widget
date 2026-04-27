@@ -1,494 +1,307 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import {
-  motion,
-  useInView,
-  useMotionValue,
-  useTransform,
-  useSpring,
-} from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
-/* ─────────────────────────── data ─────────────────────────── */
+const heroStatement = "우리는 단순한 솔루션 제공사가 아닙니다.";
 
-const headlineLines = [
-  { text: "우리는 단순한", metal: false },
-  { text: "솔루션 제공사가", metal: true },
-  { text: "아닙니다.", metal: false },
-];
-
-const stats = [
-  { raw: 3, suffix: "+", label: "핵심 플랫폼", isNumber: true },
-  { raw: "AI", suffix: "", label: "기반 기술", isNumber: false },
-  { raw: "∞", suffix: "", label: "확장 가능성", isNumber: false },
+const visionItems = [
+  "아이디어가 현실이 되고.",
+  "콘텐츠가 가치가 되고.",
+  "미디어가 비즈니스가 되고.",
+  "성장이 구조가 되고.",
+  "기술이 미래를 만든다.",
 ] as const;
 
-const marqueeItems = [
-  "아이디어가 현실이 되고",
-  "콘텐츠가 가치가 되고",
-  "미디어가 비즈니스가 된다",
-  "PMT",
-  "디지털 혁신 파트너",
-];
+const partnerLogos = [
+  { src: "/kbs.png", alt: "KBS" },
+  { src: "/sbs.png", alt: "SBS" },
+  { src: "/mbc.svg", alt: "MBC" },
+  { src: "/jtbc.svg", alt: "JTBC" },
+  { src: "/channelA.svg", alt: "Channel A" },
+  { src: "/mbn.svg", alt: "MBN" },
+  { src: "/tv-chosun.png", alt: "TV Chosun" },
+  { src: "/cj.png", alt: "CJ" },
+  { src: "/edaily.png", alt: "eDaily" },
+  { src: "/tripass.png", alt: "Tripass" },
+  { src: "/modori.png", alt: "Modori" },
+  { src: "/gifez.png", alt: "Gifez" },
+  { src: "/inuiro.png", alt: "Inuiro" },
+  { src: "/livewith.png", alt: "Livewith" },
+  { src: "/hyu.png", alt: "HYU" },
+  { src: "/shampagnefirm.png", alt: "Shampagne Firm" },
+  { src: "/cidermics.png", alt: "Cidermics" },
+  { src: "/plus.png", alt: "Plus" },
+  { src: "/butiple.jpg", alt: "Butiple" },
+  { src: "/channels4_profile.jpg", alt: "Channels4" },
+  { src: "/gwangju.jpeg", alt: "Gwangju" },
+  { src: "/media-commerce.png", alt: "Media Commerce" },
+  { src: "/v.png", alt: "V" },
+  { src: "/coei.svg", alt: "Coei" },
+  { src: "/kibo.png", alt: "Kibo" },
+  { src: "/kosme.jpg", alt: "Kosme" },
+  { src: "/ksu.svg", alt: "KSU" },
+] as const;
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const reveal = { duration: 1.15, ease };
 
-const topRowLogos = [
-  { src: "/jtbc.svg", alt: "JTBC", h: 40 },
-  { src: "/channelA.svg", alt: "채널A", h: 32 },
-  { src: "/mbc.svg", alt: "MBC", h: 24 },
-  { src: "/tripass.png", alt: "Tripass", h: 40 },
-  { src: "/edaily.png", alt: "EDAILY", h: 36 },
-  { src: "/sbs.png", alt: "SBS", h: 40 },
-  { src: "/plus.png", alt: "플플", h: 36 },
-  { src: "/mbn.svg", alt: "MBN", h: 24 },
-  { src: "/hyu.png", alt: "한양대", h: 32 },
-  { src: "/inuiro.png", alt: "인의로", h: 28 },
-  { src: "/gifez.png", alt: "기페즈", h: 36 },
-  { src: "/cidermics.png", alt: "사이더경제", h: 28 },
-  { src: "/livewith.png", alt: "라이브위드", h: 28 },
-];
-
-const bottomRowLogos = [
-  { src: "/kbs.png", alt: "KBS", h: 40 },
-  { src: "/shampagnefirm.png", alt: "샴페인펌", h: 28 },
-  { src: "/cj.png", alt: "CJ", h: 32 },
-  { src: "/image.png", alt: "미디어커머스", h: 28 },
-  { src: "/tv-chosun.png", alt: "TV조선", h: 40 },
-  { src: "/butiple.jpg", alt: "부티플", h: 28 },
-  { src: "/v.png", alt: "V", h: 32 },
-  { src: "/channels4_profile.jpg", alt: "채널스4", h: 28 },
-  { src: "/gwangju.jpeg", alt: "광주", h: 32 },
-  { src: "/media-commerce.png", alt: "미디어커머스", h: 28 },
-  { src: "/modori.png", alt: "모도리", h: 28 },
-  { src: "/vivid-venture.jpg", alt: "비비드벤처", h: 28 },
-];
-
-type LogoItem = { src: string; alt: string; h: number };
-
-function LogoMarqueeRow({
-  logos,
-  direction,
-  speed,
-}: {
-  logos: LogoItem[];
-  direction: "left" | "right";
-  speed: number;
-}) {
-  const track = [...logos, ...logos];
-  const animName = direction === "left" ? "logo-marquee-left" : "logo-marquee-right";
+function SectionKicker({ text }: { text: string }) {
   return (
-    <div className="overflow-hidden bg-white py-4">
-      <style>{`
-        @keyframes logo-marquee-left {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        @keyframes logo-marquee-right {
-          from { transform: translateX(-50%); }
-          to   { transform: translateX(0); }
-        }
-      `}</style>
-      <div
-        className="flex items-center gap-0 w-max"
-        style={{ animation: `${animName} ${speed}s linear infinite` }}
-      >
-        {track.map((logo, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-center px-10"
-            style={{ opacity: 0.75 }}
-          >
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              width={logo.h * 3}
-              height={logo.h}
-              style={{ height: logo.h, width: "auto", objectFit: "contain" }}
-              unoptimized
-            />
-          </div>
-        ))}
-      </div>
+    <div className="mb-8 flex items-center gap-3">
+      <span className="text-[11px] tracking-[0.28em] uppercase text-white/25 font-medium">
+        {text}
+      </span>
+      <div className="w-6 h-px bg-white/15" />
     </div>
   );
 }
 
-function LogoMarqueeSection() {
-  return (
-    <div className="mt-12 space-y-6">
-      <LogoMarqueeRow logos={topRowLogos} direction="left" speed={40} />
-      <Marquee />
-      <LogoMarqueeRow logos={bottomRowLogos} direction="right" speed={32} />
-    </div>
-  );
-}
-
-/* ─────────────────────────── sub-components ─────────────────────────── */
-
-function AnimatedCount({
-  target,
-  suffix,
-  inView,
+function VisualPanel({
+  variant,
+  className = "",
 }: {
-  target: number;
-  suffix: string;
-  inView: boolean;
+  variant: "portrait" | "warm" | "eye";
+  className?: string;
 }) {
-  const [val, setVal] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const dur = 1300;
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / dur, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(eased * target));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [inView, target]);
+  const styles = {
+    portrait:
+      "bg-[radial-gradient(circle_at_55%_36%,rgba(231,214,203,0.92),rgba(150,115,110,0.18)_16%,transparent_18%),radial-gradient(circle_at_54%_58%,rgba(103,47,58,0.5),transparent_18%),linear-gradient(145deg,#15161c_0%,#332832_28%,#874b5e_52%,#4db2c0_78%,#111115_100%)]",
+    warm:
+      "bg-[radial-gradient(circle_at_58%_46%,rgba(255,234,205,0.98),rgba(255,206,158,0.42)_13%,transparent_18%),radial-gradient(circle_at_42%_48%,rgba(239,180,126,0.45),transparent_24%),linear-gradient(135deg,#dad2ca_0%,#f3ece4_28%,#f0d4af_54%,#936a4d_82%,#2e2119_100%)]",
+    eye:
+      "bg-[radial-gradient(circle_at_50%_46%,rgba(235,233,227,0.95),transparent_15%),radial-gradient(circle_at_49%_47%,rgba(42,52,71,0.92),transparent_7%),linear-gradient(120deg,#2b211e_0%,#7f5a43_24%,#d7d8d7_46%,#7b98b8_70%,#151618_100%)]",
+  } as const;
 
   return (
-    <>
-      {val}
-      {suffix}
-    </>
-  );
-}
-
-function Marquee() {
-  const track = [...marqueeItems, ...marqueeItems];
-  return (
-    <div
-      className="overflow-hidden border-t border-b py-4"
-      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 1.05, ease }}
+      className={`relative overflow-hidden ${styles[variant]} ${className}`}
     >
-      <style>{`
-        @keyframes pmt-marquee {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .pmt-marquee-track {
-          animation: pmt-marquee 26s linear infinite;
-        }
-      `}</style>
-
-      <div className="pmt-marquee-track flex items-center gap-0 w-max">
-        {track.map((item, i) => (
-          <span key={i} className="flex items-center">
-            <span
-              className="whitespace-nowrap text-sm font-medium"
-              style={{
-                color: "rgba(255,255,255,0.14)",
-                letterSpacing: "0.05em",
-                paddingRight: "2.5rem",
-              }}
-            >
-              {item}
-            </span>
-            <span
-              style={{
-                color: "rgba(255,255,255,0.07)",
-                paddingRight: "2.5rem",
-                fontSize: "0.55rem",
-              }}
-            >
-              ◆
-            </span>
-          </span>
-        ))}
-      </div>
-    </div>
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),transparent_26%,rgba(0,0,0,0.16))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_20%,rgba(255,255,255,0.08)_42%,transparent_58%)] opacity-0 transition-opacity duration-700 hover:opacity-100" />
+    </motion.div>
   );
 }
 
-/* ─────────────────────────── main component ─────────────────────────── */
+function CenterIconTile() {
+  return (
+    <div className="flex h-full min-h-[240px] items-center justify-center bg-[#050505]">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.88, rotate: -10 }}
+        whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 1.2, ease }}
+        className="relative h-24 w-24"
+      >
+        <div className="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/88 shadow-[0_0_30px_rgba(255,255,255,0.18)]" />
+        <div className="absolute left-1/2 top-0 h-10 w-16 -translate-x-1/2 rounded-b-[999px] rounded-t-[999px] border-t-[10px] border-white/78 border-l-[10px] border-r-[10px] border-b-0" />
+        <div className="absolute bottom-1 left-0 h-14 w-10 rotate-[36deg] rounded-b-[999px] rounded-t-[999px] border-l-[10px] border-r-[10px] border-b-[10px] border-t-0 border-white/78" />
+        <div className="absolute bottom-1 right-0 h-14 w-10 -rotate-[36deg] rounded-b-[999px] rounded-t-[999px] border-l-[10px] border-r-[10px] border-b-[10px] border-t-0 border-white/78" />
+      </motion.div>
+    </div>
+  );
+}
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-12%" });
-
-  /* cursor-chasing glow — monochrome, matches project palette */
-  const cxRaw = useMotionValue(600);
-  const cyRaw = useMotionValue(300);
-  const cx = useSpring(cxRaw, { stiffness: 45, damping: 16 });
-  const cy = useSpring(cyRaw, { stiffness: 45, damping: 16 });
-
-  /* card 3-D tilt */
-  const txRaw = useMotionValue(0);
-  const tyRaw = useMotionValue(0);
-  const rotX = useSpring(useTransform(tyRaw, [-0.5, 0.5], [7, -7]), {
-    stiffness: 110,
-    damping: 22,
-  });
-  const rotY = useSpring(useTransform(txRaw, [-0.5, 0.5], [-7, 7]), {
-    stiffness: 110,
-    damping: 22,
-  });
-
-  const onMove = (e: React.MouseEvent<HTMLElement>) => {
-    const sr = sectionRef.current?.getBoundingClientRect();
-    if (sr) {
-      cxRaw.set(e.clientX - sr.left);
-      cyRaw.set(e.clientY - sr.top);
-    }
-    if (cardRef.current) {
-      const cr = cardRef.current.getBoundingClientRect();
-      txRaw.set((e.clientX - cr.left) / cr.width - 0.5);
-      tyRaw.set((e.clientY - cr.top) / cr.height - 0.5);
-    }
-  };
-  const onLeave = () => {
-    txRaw.set(0);
-    tyRaw.set(0);
-  };
+  const isInView = useInView(sectionRef, { once: true, margin: "-10%" });
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className="relative overflow-hidden bg-black py-28 md:py-40 px-6"
+      className="relative overflow-hidden bg-black px-4 pt-24 pb-0 md:px-8 md:pt-32 md:pb-0"
     >
-      {/* subtle grid — same density as WhyChooseUs */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px)," +
-            "linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
 
-      {/* cursor glow — white, very subtle */}
-      <motion.div
-        className="pointer-events-none absolute rounded-full"
-        style={{
-          left: cx,
-          top: cy,
-          x: "-50%",
-          y: "-50%",
-          width: 560,
-          height: 560,
-          background:
-            "radial-gradient(circle,rgba(255,255,255,0.032) 0%,transparent 65%)",
-        }}
-      />
-
-      {/* ─── content ─── */}
-      <div className="relative z-10 mx-auto max-w-[1180px]">
-        {/* top rule — same style as WhyChooseUs divider */}
-        <motion.div
-          className="mb-14 h-px bg-white/12"
-          style={{ originX: 0 }}
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.9, ease }}
-        />
-
-        {/* label — matches WhyChooseUs label style */}
-        <motion.div
-          id="about-pmt"
-          className="scroll-mt-24 mb-10 flex items-center gap-3"
-          initial={{ opacity: 0, x: -12 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.15, ease }}
-        >
-          <span
-            className="text-[11px] tracking-[0.28em] uppercase text-white/25 font-medium"
+      <div className="relative z-10 mx-auto max-w-[1820px] border border-white/12 bg-[#050505]">
+        <div className="border-b border-white/12 px-7 py-10 md:px-10 md:py-12">
+          <motion.div
+            id="about-pmt"
+            className="scroll-mt-24"
+            initial={{ opacity: 0, y: 18 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 1, ease }}
           >
-            About PMT
-          </span>
-          <div className="w-6 h-px bg-white/15" />
-        </motion.div>
+            <SectionKicker text="About PMT" />
+          </motion.div>
 
-        {/* two-column grid */}
-        <div className="grid items-start gap-14 lg:gap-20 md:grid-cols-[1fr_370px] lg:grid-cols-[1fr_410px]">
-
-          {/* ── LEFT ── */}
-          <div>
-            {/* headline mask-reveal */}
-            <h2
-              style={{
-                fontSize: "clamp(2.6rem,5.8vw,5.4rem)",
-                fontWeight: 800,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.02,
-                marginBottom: "2.5rem",
-              }}
+          <div className="max-w-[1360px] overflow-hidden">
+            <motion.h2
+              initial={{ y: "108%", opacity: 0 }}
+              animate={isInView ? { y: 0, opacity: 1 } : undefined}
+              transition={{ duration: 1.45, delay: 0.16, ease }}
+              className="text-[clamp(2.8rem,5.2vw,5.8rem)] font-black leading-[0.96] tracking-[-0.06em] text-white"
             >
-              {headlineLines.map((line, i) => (
-                <span
-                  key={i}
-                  style={{ display: "block", overflow: "hidden" }}
-                >
-                  <motion.span
-                    style={{ display: "block" }}
-                    className={line.metal ? "gradient-text-metal" : "text-white"}
-                    initial={{ y: "108%" }}
-                    animate={isInView ? { y: 0 } : {}}
-                    transition={{
-                      duration: 0.76,
-                      ease,
-                      delay: 0.28 + i * 0.09,
-                    }}
-                  >
-                    {line.text}
-                  </motion.span>
-                </span>
-              ))}
-            </h2>
+              {heroStatement}
+            </motion.h2>
+          </div>
 
-            {/* body copy */}
+        </div>
+
+        <div className="grid lg:grid-cols-4">
+          <div className="border-b border-white/12 p-7 md:p-8 lg:border-b-0 lg:border-r">
             <motion.div
-              className="max-w-[32rem] space-y-4"
-              initial={{ opacity: 0, y: 18 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.66, ease }}
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={reveal}
             >
-              <p className="text-white/50 text-base leading-relaxed">
-                PMT는 미디어 산업의 흐름을 분석하고, 고객사의 비즈니스 문제를
-                깊이 이해하여 성장을 함께 만드는{" "}
-                <span className="text-white/80 font-medium">
-                  &lsquo;디지털 혁신 파트너&rsquo;
-                </span>
-                입니다.
-              </p>
-              <p className="text-white/30 text-sm leading-relaxed">
-                데이터와 기술의 잠재력을 최대화하여 아이디어가 현실이 되고,
-                콘텐츠가 가치가 되고, 미디어가 비즈니스가 되는 경험을
-                제공합니다.
+              <p className="text-[clamp(1.7rem,2vw,2.4rem)] font-bold uppercase leading-[1.08] tracking-[-0.04em] text-white">
+                PMT builds
+                <br />
+                lasting media
+                <br />
+                momentum.
               </p>
             </motion.div>
           </div>
 
-          {/* ── RIGHT: vision card (3-D tilt) ── */}
-          <motion.div
-            ref={cardRef}
-            initial={{ opacity: 0, y: 36 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.72, delay: 0.5, ease }}
-            style={{
-              rotateX: rotX,
-              rotateY: rotY,
-              transformPerspective: 900,
-              transformStyle: "preserve-3d",
-            }}
-          >
-            <div
-              style={{
-                position: "relative",
-                borderRadius: "16px",
-                border: "1px solid rgba(255,255,255,0.09)",
-                background:
-                  "linear-gradient(150deg,rgba(255,255,255,0.042) 0%,rgba(255,255,255,0.014) 100%)",
-                padding: "32px 30px",
-                overflow: "hidden",
-              }}
+          <div className="border-b border-white/12 p-7 md:p-8 lg:border-b-0 lg:border-r">
+            <motion.div
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ ...reveal, delay: 0.1 }}
             >
-              {/* shimmer top — white, consistent with metal palette */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 1,
-                  background:
-                    "linear-gradient(to right,transparent,rgba(255,255,255,0.28),transparent)",
-                }}
-              />
-              {/* subtle corner light */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: -40,
-                  left: -40,
-                  width: 160,
-                  height: 160,
-                  background:
-                    "radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%)",
-                  pointerEvents: "none",
-                }}
-              />
-
-              {/* vision label */}
-              <p
-                className="text-[10px] font-semibold uppercase tracking-widest text-white/28 mb-4"
-              >
-                PMT의 비전
+              <SectionKicker text="Our Mission" />
+              <p className="max-w-[18rem] text-[1.02rem] leading-[1.6] text-white/66">
+                PMT는 미디어 산업의 흐름을 분석하고, 고객사의 비즈니스 문제를 깊이 이해하여
+                성장을 함께 만드는 디지털 혁신 파트너입니다.
               </p>
+            </motion.div>
+          </div>
 
-              <p className="text-white text-[1.06rem] font-semibold leading-[1.65] mb-8">
+          <div className="border-b border-white/12 p-7 md:p-8 lg:border-b-0 lg:border-r">
+            <motion.div
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ ...reveal, delay: 0.18 }}
+            >
+              <SectionKicker text="Our Goal" />
+              <p className="max-w-[20rem] text-[1.02rem] leading-[1.6] text-white/66">
                 고객과 함께 성장하며
                 <br />
                 지속 가능한 미디어 생태계를
                 <br />
                 구축하는 기술 기업
               </p>
+            </motion.div>
+          </div>
 
-              {/* stats — gradient-text-metal like TimelineSection */}
-              <div
-                className="grid grid-cols-3 gap-3 pt-6"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                {stats.map((s, i) => (
+          <div className="p-7 md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ ...reveal, delay: 0.18 }}
+            >
+              <SectionKicker text="Our Vision" />
+              <div className="space-y-3">
+                {visionItems.map((item, index) => (
                   <motion.div
-                    key={s.label}
-                    className="text-center"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.4, delay: 0.7 + i * 0.08, ease }}
+                    key={item}
+                    initial={{ opacity: 0, x: 16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.9, delay: 0.24 + index * 0.1, ease }}
+                    className="flex items-start gap-3 text-[1.02rem] leading-[1.55] text-white/68"
                   >
-                    <p
-                      className="gradient-text-metal"
-                      style={{
-                        fontSize: "1.7rem",
-                        fontWeight: 700,
-                        lineHeight: 1,
-                        marginBottom: "6px",
-                      }}
-                    >
-                      {s.isNumber ? (
-                        <AnimatedCount
-                          target={s.raw as number}
-                          suffix={s.suffix}
-                          inView={isInView}
-                        />
-                      ) : (
-                        <>
-                          {s.raw}
-                          {s.suffix}
-                        </>
-                      )}
-                    </p>
-                    <p className="text-white/24 text-[11px] tracking-wide">
-                      {s.label}
-                    </p>
+                    <span className="mt-[0.18em] text-white">➤</span>
+                    <span>{item}</span>
                   </motion.div>
                 ))}
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
 
-        {/* bottom rule */}
-        <motion.div
-          className="h-px bg-white/12 mt-16"
-          style={{ originX: 1 }}
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.35, ease }}
-        />
+        <div className="grid border-t border-white/12 lg:grid-cols-3">
+          <div className="border-b border-white/12 p-7 md:p-8 lg:border-b-0 lg:border-r">
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={reveal}
+            >
+              <p className="text-[clamp(2rem,2.8vw,3rem)] font-black leading-[1] tracking-[-0.04em] text-white">
+                12,800+
+              </p>
+              <p className="mt-4 text-[0.86rem] font-semibold uppercase tracking-[0.16em] text-white/82">
+                Short-form clips
+              </p>
+              <p className="mt-5 max-w-[18rem] text-[1rem] leading-[1.6] text-white/62">
+                AI로 자동 생성된 숏폼
+              </p>
+            </motion.div>
+          </div>
 
-        {/* logo marquee (텍스트 마퀴 포함) */}
-        <LogoMarqueeSection />
+          <div className="border-b border-white/12 p-7 md:p-8 lg:border-b-0 lg:border-r">
+            <motion.div
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ ...reveal, delay: 0.16 }}
+            >
+              <p className="text-[clamp(2rem,2.8vw,3rem)] font-black leading-[1] tracking-[-0.04em] text-white">
+                340+
+              </p>
+              <p className="mt-4 text-[0.86rem] font-semibold uppercase tracking-[0.16em] text-white/82">
+                Campaigns
+              </p>
+              <p className="mt-5 max-w-[18rem] text-[1rem] leading-[1.6] text-white/62">
+                운영한 미디어 캠페인
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="p-7 md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ ...reveal, delay: 0.24 }}
+            >
+              <p className="text-[clamp(2rem,2.8vw,3rem)] font-black leading-[1] tracking-[-0.04em] text-white">
+                48
+              </p>
+              <p className="mt-4 text-[0.86rem] font-semibold uppercase tracking-[0.16em] text-white/82">
+                Partner brands
+              </p>
+              <p className="mt-5 max-w-[18rem] text-[1rem] leading-[1.6] text-white/62">
+                협업한 브랜드·크리에이터
+              </p>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="border-t border-white/12">
+          <div className="relative overflow-hidden bg-white py-4">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-gradient-to-r from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-white to-transparent" />
+            <motion.div
+              className="flex w-max items-center gap-12"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ duration: 42, ease: "linear", repeat: Infinity }}
+            >
+              {[...partnerLogos, ...partnerLogos].map((logo, index) => (
+                <div
+                  key={`${logo.src}-${index}`}
+                  className="flex h-12 min-w-[130px] items-center justify-center"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="h-9 w-auto max-w-[120px] object-contain"
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
